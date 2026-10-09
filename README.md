@@ -33,6 +33,16 @@ audio into MicroSIP's microphone:
 
 Tip: test once by calling your own mobile number.
 
+## Auto AnyDesk ID (voice) 🎤
+
+`anydesk-voice/` is a small Python service that runs on the agent's PC. After
+the recorded message finishes, click **🎤 Auto AnyDesk ID** in the floating
+panel: it listens to the customer's spoken AnyDesk number, extracts the 9
+digits (Hindi / English / Hinglish), and automatically opens AnyDesk with a
+connection request — no typing. The customer still taps **Accept** on their
+side. See `anydesk-voice/README.md` for setup (Python + `pip install -r
+requirements.txt`, then run `run.bat` and leave it open while calling).
+
 ## Open in Visual Studio
 
 Open `AntiCalling.sln` — it's a .NET Framework 4.8 Web Application project, so
