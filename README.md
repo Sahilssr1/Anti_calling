@@ -9,9 +9,8 @@ Current mode: **call + recorded voice only** (no database saving right now).
    **▶ Play message to customer** — the recorded message plays in the browser:
    time-aware IST greeting (morning/afternoon/evening) → intro → AnyDesk request.
    The customer hears it FIRST, then the agent talks.
-3. **Audio files** are in `audio/` (MP3, same Sanjivani voice). Deploy this folder
-   to `~/SanjivaniBriefing/audio/` on the web server (the page resolves it with
-   `ResolveUrl("~/SanjivaniBriefing/audio/")`).
+3. **Audio files** are in `audio/` at the web app root (MP3, same Sanjivani voice) —
+   the page resolves them with `ResolveUrl("~/audio/")`.
 
 > Database files (`App_Code/PgDb.cs`, `db/schema.sql`, `Web.config.sample`) are
 > kept in the repo for later, but currently **not wired in** — no data is saved.
@@ -32,6 +31,22 @@ audio into MicroSIP's microphone:
    message FIRST → then you talk.
 
 Tip: test once by calling your own mobile number.
+
+## Open in Visual Studio
+
+Open `AntiCalling.sln` — it's a .NET Framework 4.8 Web Application project, so
+it loads and runs directly (F5 → IIS Express,
+`http://localhost:51742/IndividualCallingCSP.aspx`).
+NuGet packages (Newtonsoft.Json, MySql.Data, Npgsql) restore automatically.
+
+Notes:
+- `SanjivaniBriefing/caller.Master` is a minimal stub of the office master page
+  (provides the `head` and `ContentPlaceHolder1` placeholders).
+- `Stubs/` contains build stubs for office-only dependencies (`WebHelperCSP`
+  base page, `HashedHelper`, `Ssl`, `ChallengeInfo`/`CookieInfo`). The Sanjivani
+  flow (sip: call button + browser audio panel) works fully; office-only
+  integrations (telephony API, office DB) are stubbed and will throw
+  `NotImplementedException` if ever called.
 
 ## Files added/changed
 

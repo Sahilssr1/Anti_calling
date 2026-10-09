@@ -1,0 +1,17 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="caller.Master.cs" Inherits="RiskManagement.SanjivaniBriefing.caller" %>
+<%-- Standalone stub of the office master page (~/SanjivaniBriefing/caller.Master).
+     Provides the ContentPlaceHolders the page needs: "head" and "ContentPlaceHolder1". --%>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Sanjivani Calling</title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        </asp:ContentPlaceHolder>
+    </form>
+</body>
+</html>

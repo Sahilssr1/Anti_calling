@@ -710,8 +710,8 @@
                  button. The agent presses PLAY when the customer answers; the recorded
                  message (time-aware IST greeting + intro + AnyDesk request) plays in the
                  browser. Route the browser's audio into MicroSIP's microphone via a virtual
-                 audio cable so the CUSTOMER hears it first. Deploy the audio/ folder to
-                 ~/SanjivaniBriefing/audio/ on the web server. --%>
+                 audio cable so the CUSTOMER hears it first. The audio/ folder sits at the
+                 web app root in this repo. --%>
             <div id="sanjivaniMsgPanel" style="display:none; position:fixed; bottom:18px; right:18px; z-index:9999; background:#ffffff; border:2px solid #005145; border-radius:12px; padding:16px; width:320px; box-shadow:0 4px 16px rgba(0,0,0,0.25); font-family:'Poppins';">
                 <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">&#128266; Sanjivani message</div>
                 <div id="sanjivaniMsgStatus" style="font-size:13px; color:#555; margin-bottom:10px;">MicroSIP me call lag rahi hai...</div>
@@ -720,7 +720,7 @@
                 <audio id="sanjivaniAudio" preload="auto" style="display:none;"></audio>
             </div>
             <script type="text/javascript">
-                var sanjivaniAudioBase = '<%= ResolveUrl("~/SanjivaniBriefing/audio/") %>';
+                var sanjivaniAudioBase = '<%= ResolveUrl("~/audio/") %>';
                 function sanjivaniOnCallClick() {
                     var p = document.getElementById('sanjivaniMsgPanel');
                     if (p) p.style.display = 'block';
