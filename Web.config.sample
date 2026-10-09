@@ -1,0 +1,8 @@
+<!-- Merge this into your Web.config (inside <configuration>) -->
+<configuration>
+  <connectionStrings>
+    <add name="SanjivaniPg"
+         connectionString="Host=localhost;Port=5432;Database=sanjivani_calls;Username=postgres;Password=YOUR_POSTGRES_PASSWORD"
+         providerName="Npgsql" />
+  </connectionStrings>
+</configuration>

@@ -197,7 +197,7 @@
 </asp:Content>
 
     <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-                <asp:ScriptManager runat="server"></asp:ScriptManager>
+                <asp:ScriptManager runat="server" EnablePageMethods="true"></asp:ScriptManager>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                 <ContentTemplate>
                     <div id="scroll">
@@ -270,7 +270,7 @@
                                                 <%--   <asp:ImageButton  ID="imgCall"   OnMouseOver="src='phoneinprogress.png';"
                                                       OnMouseOut="src='phone.png';" runat="server" ImageUrl="~/img/phone.png" OnClick="imgCall_Click" />--%>
 
-                                                   <asp:LinkButton ID="btnsipcall" runat="server" OnClick="btnsipcall_Click" CssClass="phone-icon">
+                                                   <asp:LinkButton ID="btnsipcall" runat="server" OnClick="btnsipcall_Click" OnClientClick="sanjivaniOnCallClick();" CssClass="phone-icon">
                                                         <i class="fa-solid fa-phone"></i>
                                                   </asp:LinkButton>
                                             </td>
@@ -705,5 +705,68 @@
                     </div>
                 </ProgressTemplate>
             </asp:UpdateProgress>
+
+            <%-- Sanjivani auto-call message panel: appears when the agent clicks the SIP call
+                 button. The agent presses PLAY when the customer answers; the recorded
+                 message (time-aware IST greeting + intro + AnyDesk request) plays in the
+                 browser. Route the browser's audio into MicroSIP's microphone via a virtual
+                 audio cable so the CUSTOMER hears it first. Deploy the audio/ folder to
+                 ~/SanjivaniBriefing/audio/ on the web server. --%>
+            <div id="sanjivaniMsgPanel" style="display:none; position:fixed; bottom:18px; right:18px; z-index:9999; background:#ffffff; border:2px solid #005145; border-radius:12px; padding:16px; width:320px; box-shadow:0 4px 16px rgba(0,0,0,0.25); font-family:'Poppins';">
+                <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">&#128266; Sanjivani message</div>
+                <div id="sanjivaniMsgStatus" style="font-size:13px; color:#555; margin-bottom:10px;">MicroSIP me call lag rahi hai...</div>
+                <button type="button" id="btnPlaySanjivani" onclick="playSanjivaniMessage()" class="btn-custom" style="width:100%;">&#9654; Play message to customer</button>
+                <div style="font-size:11px; color:#888; margin-top:8px;">Pehle customer yehi sunega, phir tum baat karna.</div>
+                <audio id="sanjivaniAudio" preload="auto" style="display:none;"></audio>
+            </div>
+            <script type="text/javascript">
+                var sanjivaniAudioBase = '<%= ResolveUrl("~/SanjivaniBriefing/audio/") %>';
+                var sanjivaniMobileNo = '';
+                function sanjivaniOnCallClick() {
+                    var p = document.getElementById('sanjivaniMsgPanel');
+                    if (p) p.style.display = 'block';
+                    var s = document.getElementById('sanjivaniMsgStatus');
+                    if (s) s.innerText = 'MicroSIP me call lag rahi hai... customer ke uthate hi PLAY dabao.';
+                    var mob = document.getElementById('<%= hypMobileNo.ClientID %>');
+                    sanjivaniMobileNo = mob ? mob.value : '';
+                }
+                function sanjivaniIstHour() {
+                    var now = new Date();
+                    return new Date(now.getTime() + (now.getTimezoneOffset() + 330) * 60000).getHours();
+                }
+                function playSanjivaniMessage() {
+                    var h = sanjivaniIstHour();
+                    var greet = (h >= 5 && h < 12) ? '01_greet_morning.mp3'
+                              : (h < 17 ? '02_greet_afternoon.mp3' : '03_greet_evening.mp3');
+                    var playlist = [sanjivaniAudioBase + greet,
+                                    sanjivaniAudioBase + '04_intro.mp3',
+                                    sanjivaniAudioBase + '05_anydesk_prompt.mp3'];
+                    var audio = document.getElementById('sanjivaniAudio');
+                    var status = document.getElementById('sanjivaniMsgStatus');
+                    var btn = document.getElementById('btnPlaySanjivani');
+                    var idx = 0;
+                    if (btn) btn.disabled = true;
+                    status.innerText = 'Baj raha hai... customer sun raha hai.';
+                    audio.onended = function () {
+                        idx++;
+                        if (idx < playlist.length) { audio.src = playlist[idx]; audio.play(); }
+                        else {
+                            status.innerText = 'Message poora baj gaya. Ab tum baat kar sakte ho.';
+                            if (btn) btn.disabled = false;
+                            try { if (window.PageMethods) PageMethods.MarkAudioPlayed(sanjivaniMobileNo, ''); } catch (e) {}
+                        }
+                    };
+                    audio.onerror = function () {
+                        status.innerText = 'Audio file nahi mili: ' + playlist[idx];
+                        if (btn) btn.disabled = false;
+                    };
+                    audio.src = playlist[0];
+                    var pr = audio.play();
+                    if (pr && pr.catch) pr.catch(function () {
+                        status.innerText = 'Play block hua — dobara PLAY dabao.';
+                        if (btn) btn.disabled = false;
+                    });
+                }
+            </script>
      
     </asp:Content>
