@@ -2,10 +2,8 @@
 <!--
   AntiCalling — ASP.NET Web Forms (.NET Framework 4.8) Web Application project.
   Lets the repo open and run in Visual Studio (F5 / IIS Express).
-  Missing pieces from the bigger office app are stubbed under Stubs/ and
-  SanjivaniBriefing/caller.Master so the project builds standalone.
-  The Sanjivani flow (sip: call button + browser audio panel) works fully;
-  office-only integrations (telephony API, office DB) are stubbed out.
+  Standalone page: phone textbox + call button (sip: handoff to MicroSIP) +
+  floating Sanjivani audio panel. No database, no office dependencies.
 -->
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -56,13 +54,10 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
-    <PackageReference Include="Npgsql" Version="6.0.11" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IndividualCallingCSP.aspx" />
-    <Content Include="SanjivaniBriefing\caller.Master" />
     <Content Include="Web.config" />
     <Content Include="audio\01_greet_morning.mp3" />
     <Content Include="audio\02_greet_afternoon.mp3" />
@@ -79,19 +74,7 @@
     <Compile Include="IndividualCallingCSP.aspx.designer.cs">
       <DependentUpon>IndividualCallingCSP.aspx</DependentUpon>
     </Compile>
-    <Compile Include="SanjivaniBriefing\caller.Master.cs">
-      <DependentUpon>caller.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Stubs\WebHelperCSP.cs" />
-    <Compile Include="Stubs\OfficeHelpers.cs" />
-    <Compile Include="App_Code\PgDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
-    <None Include="Web.config.sample" />
-    <None Include="db\schema.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
