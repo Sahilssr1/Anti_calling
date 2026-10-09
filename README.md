@@ -1,18 +1,20 @@
 # Anti_calling — Sanjivani auto-call integration
 
-Modifications on top of `IndividualCallingCSP` (SanjivaniBriefing calling page):
+Current mode: **call + recorded voice only** (no database saving right now).
 
-1. **Call button (`btnsipcall_Click`)** still launches MicroSIP via the `sip:` URI
-   (unchanged behaviour), but now also logs the call start to a **local PostgreSQL**
-   database (`sanjivani_calls`, table `call_log`).
+1. **Call button (`btnsipcall_Click`)** — unchanged from before: launches MicroSIP
+   via the `sip:` URI, MicroSIP dials the customer through `192.168.2.150`.
 2. **Audio message panel**: clicking the SIP call button shows a floating
    "🔊 Sanjivani message" panel. When the customer answers, the agent presses
    **▶ Play message to customer** — the recorded message plays in the browser:
    time-aware IST greeting (morning/afternoon/evening) → intro → AnyDesk request.
-   When playback finishes, the page marks `audio_played = true` in PostgreSQL.
-3. **Audio files** are in `audio/` (MP3). Deploy this folder to
-   `~/SanjivaniBriefing/audio/` on the web server (the page resolves it with
+   The customer hears it FIRST, then the agent talks.
+3. **Audio files** are in `audio/` (MP3, same Sanjivani voice). Deploy this folder
+   to `~/SanjivaniBriefing/audio/` on the web server (the page resolves it with
    `ResolveUrl("~/SanjivaniBriefing/audio/")`).
+
+> Database files (`App_Code/PgDb.cs`, `db/schema.sql`, `Web.config.sample`) are
+> kept in the repo for later, but currently **not wired in** — no data is saved.
 
 ## How the customer hears the message
 
@@ -31,41 +33,17 @@ audio into MicroSIP's microphone:
 
 Tip: test once by calling your own mobile number.
 
-## PostgreSQL setup (local)
-
-1. Install PostgreSQL on the machine that runs this web app
-   (Windows: EDB installer from postgresql.org).
-2. Create the database and tables:
-   ```
-   createdb -U postgres sanjivani_calls
-   psql -U postgres -d sanjivani_calls -f db/schema.sql
-   ```
-3. Merge `Web.config.sample` into your `Web.config` and set the real password.
-4. Install the Npgsql driver (NuGet Package Manager Console):
-   ```
-   Install-Package Npgsql -Version 6.0.11
-   ```
-   (v6.x targets netstandard2.0, so it works on .NET Framework Web Forms.)
-5. `App_Code/PgDb.cs` is auto-compiled by ASP.NET — no project changes needed.
-
-Check the log:
-```sql
-SELECT id, call_time, mobile_no, caller_name, greeting_used, audio_played
-FROM call_log ORDER BY id DESC LIMIT 20;
-```
-
 ## Files added/changed
 
 | File | Change |
 |------|--------|
-| `IndividualCallingCSP.aspx` | ScriptManager `EnablePageMethods`, `OnClientClick` on `btnsipcall`, floating message panel + JS playlist |
-| `IndividualCallingCSP.aspx.cs` | `btnsipcall_Click` logs to PostgreSQL; new `[WebMethod] MarkAudioPlayed` |
-| `App_Code/PgDb.cs` | Npgsql helper: `LogCallStart`, `MarkAudioPlayed`, IST greeting |
-| `db/schema.sql` | `call_log` table |
-| `Web.config.sample` | `SanjivaniPg` connection string template |
+| `IndividualCallingCSP.aspx` | `OnClientClick` on `btnsipcall`, floating message panel + JS playlist |
+| `IndividualCallingCSP.aspx.cs` | unchanged behaviour (call only) |
 | `audio/*.mp3` | Sanjivani voice segments (same voice as before) |
+| `App_Code/PgDb.cs` | kept for later (PostgreSQL helper, currently unused) |
+| `db/schema.sql` | kept for later (call_log table, currently unused) |
+| `Web.config.sample` | kept for later (connection string template, currently unused) |
 
 ## Notes
 
-- DB writes are wrapped in try/catch — if PostgreSQL is down, the call still goes through.
 - Only call customers who have agreed to be contacted.

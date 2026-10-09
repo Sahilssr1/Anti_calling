@@ -8,7 +8,6 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.Services;
 using DataAccessHelpers;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -1257,30 +1256,8 @@ WHERE vilid = @vilid
         protected void btnsipcall_Click(object sender, EventArgs e)
         {
             Session["callstartedat"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string mobileNo = hypMobileNo.Text.Trim();
-            Session["mobileno"] = mobileNo;
-
-            // Sanjivani auto-call: log the call start to local PostgreSQL.
-            // This must never break the call, so failures are swallowed.
-            try
-            {
-                string caller = Convert.ToString(Session["callername"]);
-                PgDb.LogCallStart(mobileNo, caller, PgDb.GreetingForNow());
-            }
-            catch { }
-
-            Response.Redirect("sip:0" + mobileNo + "@192.168.2.150?method=call");
-        }
-
-        /// <summary>
-        /// Called from the browser (PageMethods) when the Sanjivani audio message
-        /// finishes playing to the customer. Marks the latest call_log row.
-        /// </summary>
-        [WebMethod]
-        public static void MarkAudioPlayed(string mobileNo, string callerName)
-        {
-            try { PgDb.MarkAudioPlayed(mobileNo, callerName); }
-            catch { }
+            Session["mobileno"] = hypMobileNo.Text.Trim();
+            Response.Redirect("sip:0" + hypMobileNo.Text + "@192.168.2.150?method=call");
         }
 
         protected void editPhoneNum_Click(object sender, EventArgs e)

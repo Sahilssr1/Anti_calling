@@ -197,7 +197,7 @@
 </asp:Content>
 
     <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-                <asp:ScriptManager runat="server" EnablePageMethods="true"></asp:ScriptManager>
+                <asp:ScriptManager runat="server"></asp:ScriptManager>
                 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                 <ContentTemplate>
                     <div id="scroll">
@@ -721,14 +721,11 @@
             </div>
             <script type="text/javascript">
                 var sanjivaniAudioBase = '<%= ResolveUrl("~/SanjivaniBriefing/audio/") %>';
-                var sanjivaniMobileNo = '';
                 function sanjivaniOnCallClick() {
                     var p = document.getElementById('sanjivaniMsgPanel');
                     if (p) p.style.display = 'block';
                     var s = document.getElementById('sanjivaniMsgStatus');
                     if (s) s.innerText = 'MicroSIP me call lag rahi hai... customer ke uthate hi PLAY dabao.';
-                    var mob = document.getElementById('<%= hypMobileNo.ClientID %>');
-                    sanjivaniMobileNo = mob ? mob.value : '';
                 }
                 function sanjivaniIstHour() {
                     var now = new Date();
@@ -753,7 +750,6 @@
                         else {
                             status.innerText = 'Message poora baj gaya. Ab tum baat kar sakte ho.';
                             if (btn) btn.disabled = false;
-                            try { if (window.PageMethods) PageMethods.MarkAudioPlayed(sanjivaniMobileNo, ''); } catch (e) {}
                         }
                     };
                     audio.onerror = function () {
