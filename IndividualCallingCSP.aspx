@@ -35,11 +35,34 @@
             <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">&#128266; Sanjivani message</div>
             <div id="sanjivaniMsgStatus" style="font-size:13px; color:#555; margin-bottom:10px;">MicroSIP me call lag rahi hai...</div>
             <button type="button" id="btnPlaySanjivani" onclick="playSanjivaniMessage()" style="width:100%; font-size:15px; padding:10px; background:#005145; color:#ffffff; border:none; border-radius:8px; cursor:pointer;">&#9654; Play message to customer</button>
+            <button type="button" id="btnAutoAnyDesk" onclick="autoAnyDeskId()" style="width:100%; font-size:15px; padding:10px; margin-top:8px; background:#1a73e8; color:#ffffff; border:none; border-radius:8px; cursor:pointer;">&#127908; Auto AnyDesk ID</button>
+            <div id="anydeskVoiceStatus" style="font-size:12px; color:#555; margin-top:8px;"></div>
             <div style="font-size:11px; color:#888; margin-top:8px;">Pehle customer yehi sunega, phir tum baat karna.</div>
             <audio id="sanjivaniAudio" preload="auto" style="display:none;"></audio>
         </div>
         <script type="text/javascript">
             var sanjivaniAudioBase = '<%= ResolveUrl("~/audio/") %>';
+            function autoAnyDeskId() {
+                var st = document.getElementById('anydeskVoiceStatus');
+                var btn = document.getElementById('btnAutoAnyDesk');
+                if (btn) btn.disabled = true;
+                st.innerText = 'Sun raha hai... customer se number bolne ko kaho.';
+                fetch('http://127.0.0.1:8787/listen', { method: 'POST' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        if (d.id) {
+                            st.innerText = 'AnyDesk ID: ' + d.id + ' — AnyDesk khul gaya, customer se Accept karvao.';
+                        } else {
+                            st.innerText = 'Number samajh nahi aaya. Khud type kar lo.' +
+                                (d.transcript ? ' (suna: ' + d.transcript + ')' : '') +
+                                (d.error ? ' [' + d.error + ']' : '');
+                        }
+                    })
+                    .catch(function () {
+                        st.innerText = 'Listener service nahi chal rahi — pehle anydesk-voice/run.bat start karo.';
+                    })
+                    .finally(function () { if (btn) btn.disabled = false; });
+            }
             function sanjivaniOnCallClick() {
                 var phone = document.getElementById('<%= txtPhone.ClientID %>').value.trim();
                 var err = document.getElementById('<%= lblMsg.ClientID %>');

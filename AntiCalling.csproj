@@ -56,6 +56,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="anydesk-voice\README.md" />
+    <None Include="anydesk-voice\requirements.txt" />
+    <None Include="anydesk-voice\run.bat" />
+    <None Include="anydesk-voice\server.py" />
+    <None Include="anydesk-voice\anydesk_listener.py" />
+    <None Include="anydesk-voice\audio_capture.py" />
+    <None Include="anydesk-voice\digit_extract.py" />
+    <None Include="anydesk-voice\test_digits.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IndividualCallingCSP.aspx" />

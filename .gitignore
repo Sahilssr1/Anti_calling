@@ -1,3 +1,5 @@
 # local dev only
 db/data/
 *.log
+
+__pycache__/
