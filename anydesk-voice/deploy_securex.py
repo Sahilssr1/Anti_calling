@@ -48,6 +48,8 @@ def deploy(anydesk_id=""):
             if w.title.strip().lower() != "anydesk":
                 target = w
                 break
+    if target is None and wins:
+        target = wins[0]
     if target is None:
         return {"ok": False,
                 "message": "AnyDesk session window nahi mili — pehle customer se Accept karvao, phir button dabao."}
@@ -56,6 +58,9 @@ def deploy(anydesk_id=""):
         if target.isMinimized:
             target.restore()
         target.activate()
+        import ctypes
+        if hasattr(target, "_hWnd"):
+            ctypes.windll.user32.SetForegroundWindow(target._hWnd)
     except Exception:
         pass  # focus hint failed; keystrokes may still land correctly
     time.sleep(1.0)
