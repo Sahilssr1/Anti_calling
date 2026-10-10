@@ -3,3 +3,8 @@ db/data/
 *.log
 
 __pycache__/
+
+# Visual Studio internals (locked while VS is open — never commit)
+.vs/
+bin/
+obj/
