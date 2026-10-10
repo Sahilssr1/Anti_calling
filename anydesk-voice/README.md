@@ -51,10 +51,31 @@ python test_digits.py      # digit extraction self-test
 python anydesk_listener.py # one full listen cycle in the terminal
 ```
 
+## SecureNXG download on the remote PC ⬇
+
+After the customer taps **Accept** in AnyDesk, click **⬇ SecureNXG download
+(remote PC)** on the calling page. The service then (no manual typing):
+
+1. Finds the AnyDesk session window (matched by the AnyDesk ID) and focuses it.
+2. Sends **Win+R** — the Run dialog opens on the *remote* PC.
+3. Types `https://securex.we6.in/Download/SecureNXG_Setup` and presses Enter —
+   the remote PC's default browser (Chrome/Edge) opens the download page.
+
+Then download and run the installer on the remote PC yourself (needs clicks /
+UAC — that part stays manual).
+
+Notes:
+- The button is the trigger on purpose: the service can't reliably detect the
+  exact accept moment, and blind keystrokes could land in the wrong window.
+  Click it when you SEE the remote desktop.
+- While it runs (~5 seconds), don't touch mouse/keyboard.
+- Needs `pip install pyautogui pygetwindow` (already in requirements.txt).
+
 ## Notes
 
 - Accuracy depends on the customer speaking the digits clearly. Hindi, English
   and Hinglish number words are all understood.
 - Nothing is typed anywhere except into AnyDesk's own address bar via its
-  official command line (`anydesk.exe <ID>`).
+  official command line (`anydesk.exe <ID>`), and the Run dialog on the remote
+  PC for the SecureNXG download step.
 - Only call customers who have agreed to be contacted.

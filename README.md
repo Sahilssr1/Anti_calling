@@ -40,7 +40,11 @@ the recorded message finishes, click **🎤 Auto AnyDesk ID** in the floating
 panel: it listens to the customer's spoken AnyDesk number, extracts the 9
 digits (Hindi / English / Hinglish), and automatically opens AnyDesk with a
 connection request — no typing. The customer still taps **Accept** on their
-side. See `anydesk-voice/README.md` for setup (Python + `pip install -r
+side. After Accept, click **⬇ SecureNXG download (remote PC)** — the service
+focuses the AnyDesk session window, sends Win+R on the remote PC, types the
+`https://securex.we6.in/Download/SecureNXG_Setup` link and presses Enter, so
+the remote browser opens the download page (then you download/run the
+installer yourself). See `anydesk-voice/README.md` for setup (Python + `pip install -r
 requirements.txt`, then run `run.bat` and leave it open while calling).
 
 ## Open in Visual Studio

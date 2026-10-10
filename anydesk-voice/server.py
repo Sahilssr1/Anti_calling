@@ -6,6 +6,9 @@ Endpoints:
     GET  /status   -> {"ok": true}
     POST /listen   -> runs the pipeline, returns {"id": ..., "transcript": ...}
                      (blocks up to LISTEN_SECONDS while it records)
+    POST /deploy   -> {"id": "<anydesk id>"} opens the SecureNXG download link
+                     on the REMOTE pc (Win+R + type URL inside the AnyDesk
+                     session window). Returns {"ok": ..., "message": ...}
 """
 
 import json
@@ -49,6 +52,15 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(run_once())
             except Exception as e:  # never leave the page hanging
                 self._send({"id": None, "error": str(e)})
+        elif self.path == "/deploy":
+            try:
+                length = int(self.headers.get("Content-Length", 0) or 0)
+                body = self.rfile.read(length).decode("utf-8") if length else "{}"
+                anydesk_id = json.loads(body).get("id", "") or ""
+                from deploy_securex import deploy as deploy_securex
+                self._send(deploy_securex(anydesk_id))
+            except Exception as e:  # never leave the page hanging
+                self._send({"ok": False, "message": str(e)})
         else:
             self._send({"error": "not found"}, 404)
 
