@@ -1,0 +1,6 @@
+E:\Anti\Anti_calling\bin\AntiCalling.dll
+E:\Anti\Anti_calling\bin\AntiCalling.pdb
+E:\Anti\Anti_calling\obj\Debug\AntiCalling.csproj.AssemblyReference.cache
+E:\Anti\Anti_calling\obj\Debug\AntiCalling.csproj.CoreCompileInputs.cache
+E:\Anti\Anti_calling\obj\Debug\AntiCalling.dll
+E:\Anti\Anti_calling\obj\Debug\AntiCalling.pdb
