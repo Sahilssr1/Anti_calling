@@ -55,9 +55,12 @@
                 fetch('http://127.0.0.1:8787/listen', { method: 'POST' })
                     .then(function (r) { return r.json(); })
                     .then(function (d) {
-                        if (d.id) {
+                        if (d.id && !d.error) {
                             lastAnydeskId = d.id;
                             st.innerText = 'AnyDesk ID: ' + d.id + ' — AnyDesk khul gaya, customer se Accept karvao.';
+                        } else if (d.id && d.error) {
+                            lastAnydeskId = d.id;
+                            st.innerText = 'AnyDesk ID: ' + d.id + ' — AnyDesk open error: ' + d.error;
                         } else {
                             st.innerText = 'Number samajh nahi aaya. Khud type kar lo.' +
                                 (d.transcript ? ' (suna: ' + d.transcript + ')' : '') +

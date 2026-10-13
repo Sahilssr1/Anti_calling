@@ -49,20 +49,50 @@ def copy_to_clipboard(text):
 def find_anydesk():
     if ANYDESK_EXE and os.path.exists(ANYDESK_EXE):
         return ANYDESK_EXE
+
+    # 1. Check if AnyDesk is already running and grab its exact exe path
+    try:
+        cmd = ['powershell', '-NoProfile', '-Command',
+               '(Get-Process AnyDesk -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Path)']
+        running_path = subprocess.check_output(cmd, text=True, timeout=2).strip()
+        if running_path and os.path.exists(running_path):
+            return running_path
+    except Exception:
+        pass
+
+    # 2. Check permanent and standard paths
     candidates = [
+        r"E:\Anti\AnyDesk\AnyDesk.exe",
+        os.path.expanduser(r"~\Downloads\AnyDesk\AnyDesk.exe"),
+        os.path.expanduser(r"~\Downloads\anydesk-mod_v9.7.5-pc-an1.ca (1)\AnyDesk.exe"),
         r"C:\Program Files (x86)\AnyDesk\AnyDesk.exe",
         r"C:\Program Files\AnyDesk\AnyDesk.exe",
-        os.path.expanduser(r"~\Downloads\anydesk-mod_v9.7.5-pc-an1.ca (1)\AnyDesk.exe"),
     ]
-    # Also check user Downloads and Desktop directories dynamically
+
+    # 3. Check user Downloads and Desktop directories dynamically
     for folder in [r"~\Downloads", r"~\Desktop"]:
         base_dir = os.path.expanduser(folder)
         if os.path.exists(base_dir):
             for root, dirs, files in os.walk(base_dir):
                 if "AnyDesk.exe" in files:
                     candidates.append(os.path.join(root, "AnyDesk.exe"))
-                if len(candidates) >= 10:
+                if len(candidates) >= 15:
                     break
+
+    # 4. Check %TEMP% directories in case AnyDesk is extracted from a zip
+    temp_dir = os.environ.get("TEMP", "")
+    if temp_dir and os.path.exists(temp_dir):
+        try:
+            for item in os.listdir(temp_dir):
+                if "anydesk" in item.lower():
+                    item_path = os.path.join(temp_dir, item)
+                    if os.path.isdir(item_path):
+                        exe_cand = os.path.join(item_path, "AnyDesk.exe")
+                        if os.path.exists(exe_cand):
+                            candidates.append(exe_cand)
+        except Exception:
+            pass
+
     for p in candidates:
         if os.path.exists(p):
             return p
