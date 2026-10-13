@@ -70,6 +70,32 @@ Notes:
   Click it when you SEE the remote desktop.
 - While it runs (~5 seconds), don't touch mouse/keyboard.
 - Needs `pip install pyautogui pygetwindow` (already in requirements.txt).
+- Safety: before sending Win+R the service checks the AnyDesk window is
+  actually in the foreground, so keystrokes can never fire on the LOCAL pc.
+
+## Auto Install SecureNXG on the remote PC 🚀
+
+After the customer taps **Accept**, click **🚀 Auto Install SecureNXG
+(remote PC)** — ONE click, then hands-free:
+
+1. The service focuses the AnyDesk session window, sends **Win+R** on the
+   remote PC, opens PowerShell and types a short bootstrap.
+2. The bootstrap downloads `remote_install.ps1` from this repo (GitHub) and
+   runs it ON THE REMOTE PC. That script:
+   - Downloads the installer from the SecureNXG download URL (handles both a
+     direct file and a web page with an .exe/.msi link).
+   - Detects the installer type (MSI / NSIS / Inno Setup) and runs it
+     SILENTLY — no wizard clicks.
+   - Verifies the install (service / process / uninstall registry / folder)
+     and prints a BIG **RESULT: INSTALLED / FAILED** on the remote screen —
+     you see it through AnyDesk. Log: `%TEMP%\snxg\install.log` on the
+     remote PC.
+3. The ONLY manual step left: if Windows shows a UAC prompt, the customer
+   clicks **YES** once. Remote tools cannot click UAC — that is a Windows
+   security rule.
+
+IMPORTANT: `remote_install.ps1` is fetched from GitHub main, so **push this
+repo before testing** — otherwise the remote PC gets a 404.
 
 ## Notes
 

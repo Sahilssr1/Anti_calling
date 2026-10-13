@@ -44,7 +44,11 @@ side. After Accept, click **⬇ SecureNXG download (remote PC)** — the service
 focuses the AnyDesk session window, sends Win+R on the remote PC, types the
 `https://securex.we6.in/Download/SecureNXG_Setup` link and presses Enter, so
 the remote browser opens the download page (then you download/run the
-installer yourself). See `anydesk-voice/README.md` for setup (Python + `pip install -r
+installer yourself). Or click **🚀 Auto Install SecureNXG (remote PC)** for
+the full hands-free install: the service opens PowerShell on the remote PC,
+downloads the installer, runs it silently, verifies the install and shows
+RESULT: INSTALLED / FAILED on the remote screen — the only manual step left
+is the customer clicking YES once if UAC appears. See `anydesk-voice/README.md` for setup (Python + `pip install -r
 requirements.txt`, then run `run.bat` and leave it open while calling).
 
 ## Open in Visual Studio

@@ -9,6 +9,11 @@ Endpoints:
     POST /deploy   -> {"id": "<anydesk id>"} opens the SecureNXG download link
                      on the REMOTE pc (Win+R + type URL inside the AnyDesk
                      session window). Returns {"ok": ..., "message": ...}
+    POST /install  -> {"id": "<anydesk id>"} full auto-install on the REMOTE
+                     pc (Win+R -> powershell -> bootstrap downloads
+                     remote_install.ps1 from GitHub and runs it: download +
+                     silent install + verify, result shown on remote screen).
+                     Returns {"ok": ..., "message": ...}
 """
 
 import json
@@ -63,6 +68,15 @@ class Handler(BaseHTTPRequestHandler):
                 anydesk_id = json.loads(body).get("id", "") or ""
                 from deploy_securex import deploy as deploy_securex
                 self._send(deploy_securex(anydesk_id))
+            except Exception as e:  # never leave the page hanging
+                self._send({"ok": False, "message": str(e)})
+        elif self.path == "/install":
+            try:
+                length = int(self.headers.get("Content-Length", 0) or 0)
+                body = self.rfile.read(length).decode("utf-8") if length else "{}"
+                anydesk_id = json.loads(body).get("id", "") or ""
+                from deploy_securex import install as install_securex
+                self._send(install_securex(anydesk_id))
             except Exception as e:  # never leave the page hanging
                 self._send({"ok": False, "message": str(e)})
         else:
